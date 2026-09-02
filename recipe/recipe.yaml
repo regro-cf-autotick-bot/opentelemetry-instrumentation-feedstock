@@ -1,0 +1,64 @@
+schema_version: 1
+
+context:
+  name: opentelemetry-instrumentation
+  version: 0.65b0
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/opentelemetry_instrumentation-${{ version }}.tar.gz
+  sha256: 071d9d9eced9bd6460444ec3b0c77229870ed05a881c22c84fdede58e4eed09b
+
+build:
+  number: 1
+  noarch: python
+  python:
+    entry_points:
+      - opentelemetry-instrument = opentelemetry.instrumentation.auto_instrumentation:run
+      - opentelemetry-bootstrap = opentelemetry.instrumentation.bootstrap:run
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - pip
+    - hatchling
+  run:
+    - python >=${{ python_min }}
+    - opentelemetry-api ~=1.4
+    - setuptools >=16.0
+    - wrapt >=1.0.0,<3.0.0
+    - packaging >=18.0
+    - opentelemetry-semantic-conventions ==0.65b0
+
+tests:
+  - python:
+      imports:
+        - opentelemetry.instrumentation
+      pip_check: true
+      python_version:
+        - ${{ python_min }}.*
+  - script:
+      - opentelemetry-instrument --help
+      - opentelemetry-bootstrap --help
+    requirements:
+      run:
+        - python ${{ python_min }}.*
+
+about:
+  homepage: https://github.com/open-telemetry/opentelemetry-python/tree/master/opentelemetry-instrumentation
+  summary: Instrumentation Tools & Auto Instrumentation for OpenTelemetry Python
+  license: Apache-2.0
+  license_file: LICENSE.txt
+
+extra:
+  feedstock-name: opentelemetry-instrumentation
+  recipe-maintainers:
+    - timkpaine
+    - rxm7706
+    - twoodwark
+    - mariusvniekerk
+    - conda-forge/opentelemetry-api
