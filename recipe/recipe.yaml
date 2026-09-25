@@ -41,6 +41,7 @@ tests:
       pip_check: true
       python_version:
         - ${{ python_min }}.*
+        - "*"
   - script:
       - opentelemetry-instrument --help
       - opentelemetry-bootstrap --help
